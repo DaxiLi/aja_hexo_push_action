@@ -38,8 +38,12 @@ inputs:
     description: theme name
     required: true
     default: "theme"
+  refresh-on: 
+    description: upload all files
+    required: true
+    default: "no"
 
-    
+
 runs:
   using: "composite"
   steps:
@@ -62,9 +66,9 @@ runs:
 
     - name: checkout theme
       uses: actions/checkout@v3
-      if: ${{ env.theme_repository }} != '' || ${{ env.theme_repository }} != 'none'
+      if: ${{ inputs.theme_repository }} != '' || ${{ inputs.theme_repository }} != 'none'
       with:
-        repository: ${{env.theme_repository}}
+        repository: ${{inputs.theme_repository}}
         fetch-depth: 1
         path: theme
 
@@ -79,7 +83,7 @@ runs:
       working-directory: blog/hexo
 
     - name: install hexo
-      run: npm install -g hexo-cli@${{ env.hexo-cli-version }}
+      run: npm install -g hexo-cli@${{ inputs.hexo-cli-version }}
       shell: bash
       working-directory: blog
 
@@ -88,19 +92,19 @@ runs:
         rm -rf blog/hexo/source && cp -rf source blog/hexo/
       shell: bash
 
-    - if: ${{ env.theme_repository }} != '' || ${{ env.theme_repository }} != 'none'
+    - if: ${{ inputs.theme_repository }} != '' || ${{ inputs.theme_repository }} != 'none'
       run: |
-        rm -rf blog/hexo/themes/* && cp -rf theme blog/hexo/themes/${{env.theme_name}}
+        rm -rf blog/hexo/themes/* && cp -rf theme blog/hexo/themes/${{inputs.theme_name}}
       shell: bash
 
     - name: move config
-      if: ${{env.hexo_config_path}} != '' && ${{env.hexo_config_path}} != 'none'
-      run: cp source/${{env.hexo_config_path}} blog/hexo/_config.yml
+      if: ${{inputs.hexo_config_path}} != '' && ${{inputs.hexo_config_path}} != 'none'
+      run: cp source/${{inputs.hexo_config_path}} blog/hexo/_config.yml
       shell: bash
 
-    - if: ${{env.theme_config_path}} != '' && ${{env.theme_config_path}} != 'none'
+    - if: ${{inputs.theme_config_path}} != '' && ${{inputs.theme_config_path}} != 'none'
       run: |
-        cp -rf source/${{env.theme_config_path}}  blog/hexo/themes/${{env.theme_name}}/_config.yml
+        cp -rf source/${{inputs.theme_config_path}}  blog/hexo/themes/${{inputs.theme_name}}/_config.yml
       shell: bash
 
     - name: clean ddirectory
@@ -118,10 +122,10 @@ runs:
       shell: bash
 
     - name: get manifest.json
-      if: ${{env.domain}} != '' && ${{env.domain}} != 'none'
-      run: wget --no-check-certificate ${{env.domain}}manifest.json -O ./manifest.json
+      if: ${{inputs.domain}} != '' && ${{inputs.domain}} != 'none'
+      run: wget --no-check-certificate ${{inputs.domain}}manifest.json -O ./manifest.json
       shell: bash
 
     - name: upload
-      run: node blog/main.js ${{env.bucket}} ${{env.access_key}} ${{env.secret_key}} blog/hexo/public ${{env.domain}} ${{env.qiniu_zone}} ./manifest.json true
+      run: node blog/main.js ${{inputs.bucket}} ${{inputs.access_key}} ${{inputs.secret_key}} blog/hexo/public ${{inputs.domain}} ${{inputs.qiniu_zone}} ./manifest.json ${{inputs.refresh-on}}
       shell: bash

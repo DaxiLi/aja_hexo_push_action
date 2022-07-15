@@ -118,7 +118,7 @@ runs:
 
     - name: list  the generate files
       run: |
-        ls blog/hexo/public  blog/hexo/themes  blog/hexo/themes/cards
+        ls -ll blog/hexo blog/hexo/public  blog/hexo/themes  blog/hexo/themes/cards
       shell: bash
 
     - name: get manifest.json

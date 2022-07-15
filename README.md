@@ -1,6 +1,8 @@
 # aja_hexo_push_action
 自动将 hexo 博客推送至七牛云
 
+[hexo to qiniu](https://github.com/DaxiLi/aja_hexo_push_action)
+
 七牛云免费的 10GB 空间和流量拥有不错的速度，并且可以设置使用 index.html 作为默认首页
 我们可以很容易将静态博客放到七牛云上
 

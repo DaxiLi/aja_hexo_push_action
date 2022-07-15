@@ -3,7 +3,7 @@
  * Project: d:\ajarc
  * Created Date: Thursday, July 14th 2022, 6:51:32 pm
  * Author: Aja
- * Last Modified: Saturday, 16th July 2022 12:22:09 am
+ * Last Modified: Saturday, 16th July 2022 12:43:32 am
  * Modified By: 
  * 
  * Describe: 
@@ -44,7 +44,7 @@ let refresh = process.argv[9];
 let mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
 let config = new qiniu.conf.Config();
 uploadFolder = path.resolve(uploadFolder);
-if (zone && zone != "") config.zone = qiniu.zone[zone];
+if (zone && zone != "" && zone != "none") config.zone = qiniu.zone[zone];
 if (!domain.endsWith("/")) domain = domain + "/";
 
 

@@ -1,82 +1,135 @@
-name: 'auto push hexo to qiniu'
+name: "auto push hexo to qiniu"
 author: Yuan Jie (moogila@outlook.com)
-description: 'push the hexo static file to qiniu automatic.'
+description: "push the hexo static file to qiniu automatic."
 inputs:
-  bucket: 
-    description: 'Name of the qiniu bucket'
+  bucket:
+    description: "Name of the qiniu bucket"
     required: true
   access-key:
-    description: 'Access-key of qiniu'
+    description: "Access-key of qiniu"
     required: true
   secret-key:
-    description: 'Secret-key of qiniu'
-    required: true
-  public-folder: 
-    description: 'The folder of your hexo public(myblog/public)'
-    required: true
-  hexo-folder: 
-    description: 'The folder of your hexo (myblog)'
-    required: true
-    default: ""
-  domain:
-    description: 'Your website domain(http://example.com/)'
+    description: "Secret-key of qiniu"
     required: true
   hexo-cli-version:
-    description: 'The hexo cli version in your local env'
+    description: "The hexo cli version in your local env"
     required: true
-    default: '4.3.0'
-  qiniu-zone:
-    description: 'qiniu zone setting: 华东	Zone_z0 华北	Zone_z1 华南	Zone_z2 北美	Zone_na0'
+    default: "4.3.0"
+  domain:
+    description: "Your website domain(http://example.com/)"
     required: true
-    default: ''
-  manifest-filepath:
-    description: the file to save manifest.json
+  hexo-config-path:
+    description: hexo config file path
+    required: true
+    default: "none"
+  theme-config-path:
+    description: theme config file
+    required: true
+    default: "none"
+  theme-repository:
+    description: the repository of theme
     required: false
-    default: "manifest.json"
-  blog-repository:
-    description: the file to save manifest.json
-    required: false
-    default: ""
+    default: "none"
+  qiniu-zone: 
+    description: qiniu zone code
+    required: true
+    default: "none"
+  theme-name:
+    description: theme name
+    required: true
+    default: "theme"
+  refresh-on: 
+    description: upload all files
+    required: true
+    default: "no"
+
+
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
-    - name: install hexo-cli
+    - name: ------------------START---------------------------
+      run:  "echo \"run with inputs [ bucket: ${{inputs.bucket}} , access-key: ${{inputs.access-key}} ,secret-key:${{inputs.secret-key}}, hexo-cli-version:${{inputs.hexo-cli-version}}, domain:${{inputs.domain}}, hexo-config-path:${{inputs.hexo-config-path}}, theme-config-path:${{inputs.theme-config-path}},  theme-repository:${{inputs.theme-repository}}, qiniu-zone:${{inputs.qiniu-zone}}, theme-name:${{inputs.theme-name}},  refresh-on: ${{inputs.refresh-on}}] \""
+      shell: bash
+
+    - name: ----------------- setup nodejs--------------------
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16.x
+
+    - uses: actions/checkout@v3
+      with:
+        repository: DaxiLi/aja_hexo_push_action
+        fetch-depth: 1
+        path: blog
+
+    - name: ------------- checkout source --------------------
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 1
+        path: source
+
+    - name: ------------- checkout theme ---------------------
+      uses: actions/checkout@v3
+      if: ${{ inputs.theme-repository }} != '' || ${{ inputs.theme-repository }} != 'none'
+      with:
+        repository: ${{inputs.theme-repository}}
+        fetch-depth: 1
+        path: theme
+
+    - name: ------------- install dependencies ---------------
+      run: npm ci
+      shell: bash
+      working-directory: blog
+
+    - name: ------------ install dependencies  ---------------
+      run: npm ci
+      shell: bash
+      working-directory: blog/hexo
+
+    - name: ------------- install hexo  ----------------------
       run: npm install -g hexo-cli@${{ inputs.hexo-cli-version }}
       shell: bash
-          
-    - name: List files in the repository
-      run: ls ${{ github.workspace }}/main 
-      shell: bash
-          
-    - name: List files in the theme
-      run: ls ${{ github.workspace }}/main/themes 
-      shell: bash
-          
-    - name: List files in the ${{inputs.hexo-folder}}
-      run: ls ${{ github.workspace }}/main/${{ inputs.hexo-folder }} 
+      working-directory: blog
+
+    - name: -------------------- config ----------------------
+      run: |
+        rm -rf blog/hexo/source && cp -rf source blog/hexo/
       shell: bash
 
-    - name: install dependencies
-      run: npm ci 
+    - if: ${{ inputs.theme-repository }} != '' || ${{ inputs.theme-repository }} != 'none'
+      run: |
+        rm -rf blog/hexo/themes/* && cp -rf theme blog/hexo/themes/${{inputs.theme-name}}
       shell: bash
-      working-directory: ${{ github.workspace }}/main
 
-    - name: install dependencies for hexo
-      run: npm ci 
+    - name: move config
+      if: ${{inputs.hexo-config-path}} != '' && ${{inputs.hexo-config-path}} != 'none'
+      run: cp source/${{inputs.hexo-config-path}} blog/hexo/_config.yml
       shell: bash
-      working-directory: ${{ github.workspace }}/main/${{ inputs.hexo-folder }}
-            
-    - name: download manifest from your qiniu bucket
-      run: wget --no-check-certificate ${{ inputs.domain }}/manifest.json -O ${{ github.workspace }}/main/${{inputs.manifest-filepath}} && cat  ${{ github.workspace }}/main/${{inputs.manifest-filepath}}
+
+    - if: ${{inputs.theme-config-path}} != '' && ${{inputs.theme-config-path}} != 'none'
+      run: |
+        cp -rf source/${{inputs.theme-config-path}}  blog/hexo/themes/${{inputs.theme-name}}/_config.yml
       shell: bash
-      working-directory: ${{ github.workspace }}/main
-            
-    - name: generate the public files 
+
+    - name: -------------------- clean ddirectory ---------------
+      run: rm -rf blog/hexo/source/.github blog/hexo/source/.git
+      shell: bash
+
+    - name: ----------------- generate public file --------------
       run: hexo generate
       shell: bash
-      working-directory: ${{ github.workspace }}/main/${{ inputs.hexo-folder }}
+      working-directory: blog/hexo/
 
-    - name: run the script
-      run: node main.js ${{ inputs.bucket }} ${{ inputs.access-key }} ${{ inputs.secret-key }} ${{inputs.hexo-folder}}/${{inputs.public-folder}} ${{ inputs.domain }}  ${{inputs.qiniu-zone}} ${{github.workspace}}/main/${{inputs.manifest-filepath}}
+    - name: ---------------- list  the generate files  -------------
+      run: |
+        ls -ll blog/hexo blog/hexo/public  blog/hexo/themes  blog/hexo/themes/cards
       shell: bash
-      working-directory: ${{ github.workspace }}/main
+
+    - name: --------------------- get manifest.json --------------------
+      if: ${{inputs.domain}} != '' && ${{inputs.domain}} != 'none'
+      run: wget --no-check-certificate ${{inputs.domain}}manifest.json -O ./manifest.json
+      shell: bash
+
+    - name: ---------------------------------------- upload  -------------------
+      run: node blog/main.js ${{inputs.bucket}} ${{inputs.access-key}} ${{inputs.secret-key}} blog/hexo/public ${{inputs.domain}} ${{inputs.qiniu-zone}} ./manifest.json ${{inputs.refresh-on}}
+      shell: bash

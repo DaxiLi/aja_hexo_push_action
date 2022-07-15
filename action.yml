@@ -48,7 +48,7 @@ runs:
   using: "composite"
   steps:
     - name: ------------------START---------------------------
-      run:  "echo \"run with inputs [ bucket: ${{inputs.bucket}} , access-key: ${{inputs.access-key}} ,secret-key:${{inputs.secret-key}}, hexo-cli-version:${{inputs.hexo-cli-version}}, domain:${{inputs.domain}}, hexo-config-path:$${{inputs.hexo-config-path}}, theme-config-path:${{inputs.theme-config-path}},  theme-repostory:${{inputs.theme-repository}}, qiniu-zone:${{inputs.qiniu-zone}}, theme-name:${{inputs.theme-name}},  refresh-on: ${{inputs.refresh-on}}] "
+      run:  "echo \"run with inputs [ bucket: ${{inputs.bucket}} , access-key: ${{inputs.access-key}} ,secret-key:${{inputs.secret-key}}, hexo-cli-version:${{inputs.hexo-cli-version}}, domain:${{inputs.domain}}, hexo-config-path:${{inputs.hexo-config-path}}, theme-config-path:${{inputs.theme-config-path}},  theme-repostory:${{inputs.theme-repository}}, qiniu-zone:${{inputs.qiniu-zone}}, theme-name:${{inputs.theme-name}},  refresh-on: ${{inputs.refresh-on}}] \""
       shell: bash
 
     - name: ----------------- setup nodejs--------------------

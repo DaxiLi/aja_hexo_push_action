@@ -3,7 +3,7 @@
  * Project: d:\ajarc
  * Created Date: Thursday, July 14th 2022, 2:02:12 pm
  * Author: Aja
- * Last Modified: Friday, 15th July 2022 3:20:46 pm
+ * Last Modified: Friday, 15th July 2022 9:34:43 pm
  * Modified By: 
  * 
  * Describe: 在目录下生成 manifest.json
@@ -87,12 +87,8 @@ let getDiffObj = function (maniFileL, maniFileR) {
         console.error("read file err:", err);
         return [jsonL, false, false]
     }
-    let res = getDiff(jsonL, jsonR);
-    res['manifest.json'] = {
-        isDir: false,
-        md5: Math.random()
-    }
-    return res;
+    return = getDiff(jsonL, jsonR);
+
 }
 
 
@@ -141,7 +137,6 @@ function getDiff(L, R) {
 
 
 let processDir = function (dir) {
-    console.time("process directory");
     const res = {
         isDir: true
     }
@@ -178,7 +173,6 @@ let processDir = function (dir) {
             }
         }
     }
-    console.timeEnd("process directory");
     return res;
 }
 
@@ -192,13 +186,13 @@ let generateMeniFest = function (dir = "", outfile = "") {
     console.time("generate manifest.json");
     if (!dir || dir == "") {
         dir = process.cwd;
-        console.warn("has no input file path, use pwd as a default path!");
+        console.warn("you do not input the file path, use pwd as a default path!");
     }
     dir = path.resolve(dir);
     if (!fs.statSync(dir).isDirectory()) throw Error(dir + "is not a directory!");
     try {
         fs.accessSync(dir, fs.constants.R_OK);
-        console.info("the dir can be read!");
+        console.info(dir + " can be read!");
     } catch (err) {
         throw Error(dir + " can not be read!" + err);
     }
@@ -224,7 +218,10 @@ let generateMeniFest = function (dir = "", outfile = "") {
     } catch (err) {
         console.error("write file err:" + err);
     }
+    console.info("the menifest.json of " + dir + "is:");
+    console.groupCollapsed();
     console.log(JSON.stringify(r, space = 4));
+    console.groupEnd();
     console.timeEnd("generate manifest.json");
     return outfile;
 }

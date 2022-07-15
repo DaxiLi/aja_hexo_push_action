@@ -14,10 +14,11 @@ inputs:
   public-folder: 
     description: 'The folder of your hexo public(myblog/public)'
     required: true
+    default: 'public'
   hexo-folder: 
     description: 'The folder of your hexo (myblog)'
     required: true
-    default: ""
+    default: "hexo"
   domain:
     description: 'Your website domain(http://example.com/)'
     required: true
@@ -37,39 +38,61 @@ inputs:
     description: the file to save manifest.json
     required: false
     default: ""
+  hexo-config:
+    description: the file to save manifest.json
+    required: false
+    default: ""
+  theme-config:
+    description: the file to save manifest.json
+    required: false
+    default: ""
+  theme-repository:
+    description: the file to save manifest.json
+    required: false
+    default: ""
+  worke-dir:
+    description: the file to save manifest.json
+    required: false
+    default: "main"
+  blog-dir:
+    description: the file to save manifest.json
+    required: false
+    default: "main"
 runs:
   using: 'composite'
   steps:
     - name: install hexo-cli
       run: npm install -g hexo-cli@${{ inputs.hexo-cli-version }}
       shell: bash
+
+      
           
     - name: List files in the repository
-      run: ls ${{ github.workspace }}/main 
+      run: ls ${{ github.workspace }}/${{inputs.work-dir}}
       shell: bash
           
     - name: List files in the theme
-      run: ls ${{ github.workspace }}/main/themes 
+      run: ls ${{ github.workspace }}/${{inputs.work-dir}}/themes 
       shell: bash
           
     - name: List files in the ${{inputs.hexo-folder}}
-      run: ls ${{ github.workspace }}/main/${{ inputs.hexo-folder }} 
+      run: ls ${{ github.workspace }}/${{inputs.work-dir}}/${{ inputs.hexo-folder }} 
       shell: bash
 
     - name: install dependencies
       run: npm ci 
       shell: bash
-      working-directory: ${{ github.workspace }}/main
+      working-directory: ${{ github.workspace }}/${{inputs.work-dir}}
 
     - name: install dependencies for hexo
       run: npm ci 
       shell: bash
-      working-directory: ${{ github.workspace }}/main/${{ inputs.hexo-folder }}
+      working-directory: ${{ github.workspace }}/${{inputs.work-dir}}/${{ inputs.hexo-folder }}
             
     - name: download manifest from your qiniu bucket
       run: wget --no-check-certificate ${{ inputs.domain }}/manifest.json -O ${{ github.workspace }}/main/${{inputs.manifest-filepath}} && cat  ${{ github.workspace }}/main/${{inputs.manifest-filepath}}
       shell: bash
-      working-directory: ${{ github.workspace }}/main
+      working-directory: ${{ github.workspace }}/${{inputs.work-dir}}
             
     - name: generate the public files 
       run: hexo generate

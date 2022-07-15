@@ -56,7 +56,7 @@ runs:
       with:
         node-version: 16.x
 
-    - uses: ----------- actions/checkout@v3-------------------
+    - uses: actions/checkout@v3
       with:
         repository: DaxiLi/aja_hexo_push_action
         fetch-depth: 1

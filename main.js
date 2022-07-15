@@ -3,7 +3,7 @@
  * Project: d:\ajarc
  * Created Date: Thursday, July 14th 2022, 6:51:32 pm
  * Author: Aja
- * Last Modified: Friday, 15th July 2022 3:34:27 pm
+ * Last Modified: Friday, 15th July 2022 9:30:58 pm
  * Modified By: 
  * 
  * Describe: 
@@ -183,7 +183,7 @@ async function updateFile2Qiniu(fileList) {
 async function main() {
     let manPath;
     try {
-        manPath = man.generateMeniFest(uploadFolder);
+        manPath = man.generateMeniFest(uploadFolder, path.resolve(uploadFolder, 'manifest.json'));
         console.log("generated menifest.json at:" + manPath);
     } catch (err) {
         console.error(err);
@@ -204,6 +204,7 @@ async function main() {
     await delFileFromQiniu(delList);
     await updateFile2Qiniu(updateList);
     await uploadFile2Qiniu(addList);
+    await updateFile2Qiniu(['manifest.json']);
 
     console.log('update success!');
 }

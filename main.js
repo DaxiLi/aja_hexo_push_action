@@ -3,7 +3,7 @@
  * Project: d:\ajarc
  * Created Date: Thursday, July 14th 2022, 6:51:32 pm
  * Author: Aja
- * Last Modified: Saturday, 16th July 2022 12:11:33 am
+ * Last Modified: Saturday, 16th July 2022 12:22:09 am
  * Modified By: 
  * 
  * Describe: 
@@ -199,15 +199,16 @@ async function main() {
         var lpath = path.resolve(manPath);
         var rpath = path.resolve(manifestPath);
         try{
-            let lf = fs.readFileSync(manPath);
-            let lj = JSON.parse(f); 
+            let lf = fs.readFileSync(lpath);
+            let lj = JSON.parse(lf); 
             addList = man.getFileList(lj);
         } catch(err){
-            console.log("读取文件失败，请检查manifest.json");
+            console.log("读取文件失败，请检查manifest.json, path: ", manPath);
+            console.error(err);
             return;
         }
         try{
-            let rf = fs.readFileSync(manifestPath);
+            let rf = fs.readFileSync(rpath);
             let rj = JSON.parse(rf);
             delList = man.getFileList(rj);
         }catch(err){

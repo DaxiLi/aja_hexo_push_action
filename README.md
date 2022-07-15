@@ -11,25 +11,27 @@
 
 # 开始使用
 
-为了本地管理时，更为清爽方便，我们需要在 GitHub 拥有两个仓库，一个是本仓库，负责七牛云推送，一个仓库存储您的博可文章。无所谓公开或私密。当然，你可以 将所有文件都放在一个仓库里，这样更简单，不过，你就不得不在你的博文目录里面看到一大堆项目文件。
 
-首先 Fork 本仓库,您的目录应该是这样的
+创建一个仓库管理你的博客文章，这个仓库的目录结构应该和 hexo 目录下的 source 目录是一样的，在处理时，您的整个仓库将被当作 hexo 目录下的 source 目录来生成静态文件。
+所以，您的博客管理仓库的目录应该类似于这个样子
 
 ```bash
+
 ├── .git
 ├── .github
-├── hexo
-├── README.md
-├── action.yml
-├── config.js
-├── main.js
-├── manifest.js
-├── package-lock.json
-├── package.json
+├── _data
+├── _post
+├── categories
+├── galleries
+├── tags
 
 ```
 
-然后再创建一个存储博客的仓库，我们称塔为 bolg-rep，稍后我们会将这个仓库作为子模块引入本仓库。
+您的文章应当放在 _post 目录下
+
+
+在开始配置之前，你需要准备好七牛云账号。
+
 
 
 ## 1.创建一个七牛空间
@@ -41,6 +43,7 @@
 进入 “空间管理” ，打开 “默认首页设置”
 
 进入 “域名管理” 绑定自己的域名 
+
 
 
 ## 2.获取和配置密钥
@@ -59,89 +62,102 @@ name 填 QINIU_SECRECT_KEY ，Value 填 七牛云的 SK
 创建打开 .github/workerflows/autopush.yml 复制并编辑写入以下配置
 
 ```yml
-name: push hexo to qiniu automatic
+
+name: push autoatic
 on: [push]
+env:
+  bucket: jieis
+  access_key: ${{ secrets.QINIU_ACCESS_KEY }}
+  secret_key: ${{ secrets.QINIU_SECRET_KEY }}
+  hexo_cli_version: 
+  domain: 
+  hexo_config_path: _data/_config.yml
+  theme_config_path: _data/cards.yml
+  theme_repository: ChrAlpha/hexo-theme-cards
+  qiniu_zone: Zone_z1
+  theme_name: cards
+
 jobs:
-  deploy:
+  autopush_job:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 1
-        path: main
-        submodules: true
-    - uses: actions/setup-node@v2
-      with:
-        node-version: 16.x
-    - uses: DaxiLi/aja_hexo_push_action@v1
-      with:
-        bucket: your bucket name
-        access-key: ${{ secrets.QINIU_ACCESS_KEY }}
-        secret-key: ${{ secrets.QINIU_SECRET_KEY }}
-        public-folder: the hexo public folder 
-        hexo-folder: the folder of hexo
-        domain: "http://example.com"
-        manifest-filepath: "manifest.jaon"
-        qiniu-zone: your qiniu zone tag
+     - name: running..
+       uses: DaxiLi/aja_hexo_push_action@v1
+       with:
+         bucket: your-bucket
+         access-key: ${{ secrets.QINIU_ACCESS_KEY }}
+         secret-key: ${{ secrets.QINIU_SECRET_KEY }}
+         hexo-cli-version: your-hexo-version
+         domain: your-domain
+         hexo-config-path: your-config-path(maybe you will put the config file in _data/_config.yml)
+         theme-config-path: your-theme-config-path(maybe _data/_theme.yml)
+         theme-repository: your-theme-repository
+         qiniu-zone: your-qiniu-zone
+         theme-name: your-theme-name
+         refresh-on: "no"
+
 
 ```
 
 + bucket：你的七牛 bucket
 + access-key：不要改动
 + secrect-key：不要改动
-+ public-folder：hexo 生成的博客目录，默认是 public
-+ hexo-folder：初始化 hexo 所在目录
 + domain：你的七牛空间绑定域名
-+ manifest-filepath: 无需改动
 + qiniu-zone：七牛空间所在地区设置 华东	Zone_z0 华北	Zone_z1 华南	Zone_z2 北美	Zone_na0
-+ bolg-repository：你的博客仓库，这个仓库专门存放博客 markdown 文件，对应 hexo 目录下的 source 目录。
++ theme-repository：你的主题所在的仓库，格式为 仓库所有者/仓库名称@label。例如： DaxiLi/beauty@v1
++ theme-name：主题文件夹的名字，通常需要在站点配置文件中填写
++ theme-config-path：你的主题配置文件路径，你可以把主题配置文件放在 _data 目录先，所以它可以是 _data/theme.yml
++ hexo-config-path：hexo 站点的配置文件，你可以把站点配置文件放在 _data 目录先，所以它可以是 _data/theme.yml
+  
 
 
+## 创建手动运行 action
 
-## 4.初始化 hexo 目录
+有时候，你可能需要手动运行，并且更新全部文件，这个时候，所以还需要添加一个 wokeflows 
 
-在项目目录下新建一个目录作为 hexo 的工作目录，（这个目录对应上面配置文件的 hexo-folder ）
+创建 .github/workerflows/autopush.yml 写入以下内容
 
-```bash
-mkdir [your hexo-folder]
-hexo init [your hexo-folder]
+```yml
+
+
+name: push autoatic
+on: [push]
+env:
+  bucket: jieis
+  access_key: ${{ secrets.QINIU_ACCESS_KEY }}
+  secret_key: ${{ secrets.QINIU_SECRET_KEY }}
+  hexo_cli_version: 
+  domain: 
+  hexo_config_path: _data/_config.yml
+  theme_config_path: _data/cards.yml
+  theme_repository: ChrAlpha/hexo-theme-cards
+  qiniu_zone: Zone_z1
+  theme_name: cards
+
+jobs:
+  autopush_job:
+    runs-on: ubuntu-latest
+    steps:
+     - name: running..
+       uses: DaxiLi/aja_hexo_push_action@v1
+       with:
+         bucket: your-bucket
+         access-key: ${{ secrets.QINIU_ACCESS_KEY }}
+         secret-key: ${{ secrets.QINIU_SECRET_KEY }}
+         hexo-cli-version: your-hexo-version
+         domain: your-domain
+         hexo-config-path: your-config-path(maybe you will put the config file in _data/_config.yml)
+         theme-config-path: your-theme-config-path(maybe _data/_theme.yml)
+         theme-repository: your-theme-repository
+         qiniu-zone: your-qiniu-zone
+         theme-name: your-theme-name
+         refresh-on: "yes"
+
 ```
-上面的指令将会创建一个 your hexo-folder 目录，并在目录下初始化一个 hexo 项目
 
-**本项目默认已经初始化在 hexo 文件夹，所以您也可以忽略此步骤，在 .github/workerflows/autopush.yml 中将 hexo-folder 填写为 hexo**
-
-如果您还没有安装 hexo，
-
-```bash
-npm i -g hexo-cli
-``` 
-或参阅 [hexo 官方网站](https://hexo.io/zh-cn/docs/)
+填写好配置之后，推送到仓库，你可以在 action 看到一个按钮手动运行该  action  即可推送仓库至 七牛云。
 
 
-## 5.将你的博客文章仓库作为 git 子模块引入
+## enjoy it！
 
-[前面](#开始使用)，我们说到，您新建了一个博客文章仓库用来更好的管理文章。我们暂且用 blog-rep 来指代它。
-
-当然，您可以忽略此步骤，您只需要像正常使用 hexo 一样，将所有文章都放在 hex-folder 下的 source 目录里即可。
-
-
-```bash
-
-rm -r [your-hexo-folder/source] 
-# 将原有的source目录删除
-git submodule add [your-blog-rep] [your-hexo-folder]/source
-# 将你的博客仓库作为子模块添加进来
-
-```
-
-
-## theme
-
-您应该还希望在 hexo 中使用主题
-
-如果您的主题支持作为子模块管理，则可以参照主题说明将，主题再作为子模块添加在 your-hex-folder 中。
-
-如果，您的主题不支持作为子模块管理，或者您不知道怎么做，那么将它像正常主题一样放到仓库的主题目录下，并将他添加到 git 的版本控制中。
-
-
-## 
+现在，每次更新你的博客仓库，它都会自动推送到你的七牛云

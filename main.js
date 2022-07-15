@@ -3,7 +3,7 @@
  * Project: d:\ajarc
  * Created Date: Thursday, July 14th 2022, 6:51:32 pm
  * Author: Aja
- * Last Modified: Saturday, 16th July 2022 12:43:32 am
+ * Last Modified: Saturday, 16th July 2022 1:00:51 am
  * Modified By: 
  * 
  * Describe: 
@@ -194,7 +194,7 @@ async function main() {
     let addList = [];
     let updateList = [];
     let delList = [];
-    if (refresh) {
+    if (refresh == "yes") {
         console.log("刷新所有文件！");
         var lpath = path.resolve(manPath);
         var rpath = path.resolve(manifestPath);

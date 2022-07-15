@@ -3,7 +3,7 @@
  * Project: d:\ajarc
  * Created Date: Thursday, July 14th 2022, 6:51:32 pm
  * Author: Aja
- * Last Modified: Friday, 15th July 2022 9:30:58 pm
+ * Last Modified: Saturday, 16th July 2022 12:11:33 am
  * Modified By: 
  * 
  * Describe: 
@@ -29,14 +29,15 @@ const { escape, unescape } = require("querystring");
 
 // argv2 =  bucket  ackey  seckey   uploadFolder  domain   manifest.jsonPath zone
 console.log(process.argv);
-if (process.argv.length < 5) {console.log("argv length is wrong."); return;}
+if (process.argv.length < 5) { console.log("argv length is wrong."); return; }
 let bucket = process.argv[2];
 let accessKey = process.argv[3];
 let secretKey = process.argv[4];
 let uploadFolder = process.argv[5];
 let domain = process.argv[6];
 let zone = process.argv[7]; // 华东	Zone_z0 华北 Zone_z1 华南 Zone_z2 北美 Zone_na0'
-let manifestPath = process.argv[8] ;
+let manifestPath = process.argv[8];
+let refresh = process.argv[9];
 
 
 
@@ -190,14 +191,38 @@ async function main() {
         return -1;
     }
     // let F = fs.readFileSync(manifestPath);
+    let addList = [];
+    let updateList = [];
+    let delList = [];
+    if (refresh) {
+        console.log("刷新所有文件！");
+        var lpath = path.resolve(manPath);
+        var rpath = path.resolve(manifestPath);
+        try{
+            let lf = fs.readFileSync(manPath);
+            let lj = JSON.parse(f); 
+            addList = man.getFileList(lj);
+        } catch(err){
+            console.log("读取文件失败，请检查manifest.json");
+            return;
+        }
+        try{
+            let rf = fs.readFileSync(manifestPath);
+            let rj = JSON.parse(rf);
+            delList = man.getFileList(rj);
+        }catch(err){
+            console.warn("del empty");
+        }
+    } else {
 
-    let diffRes = man.getDiffObj(manPath, manifestPath);
-    let addList = diffRes[0] ? man.getFileList(diffRes[0]) : [];
-    let updateList = diffRes[1] ? man.getFileList(diffRes[1]) : [];
-    let delList = diffRes[2] ? man.getFileList(diffRes[2]) : [];
+        let diffRes = man.getDiffObj(manPath, manifestPath);
+        addList = diffRes[0] ? man.getFileList(diffRes[0]) : [];
+        updateList = diffRes[1] ? man.getFileList(diffRes[1]) : [];
+        delList = diffRes[2] ? man.getFileList(diffRes[2]) : [];
 
+    }
 
-    console.log(diffRes);
+    // console.log(diffRes);
 
     // mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
 

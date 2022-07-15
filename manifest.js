@@ -3,7 +3,7 @@
  * Project: d:\ajarc
  * Created Date: Thursday, July 14th 2022, 2:02:12 pm
  * Author: Aja
- * Last Modified: Friday, 15th July 2022 9:34:43 pm
+ * Last Modified: Friday, 15th July 2022 9:37:47 pm
  * Modified By: 
  * 
  * Describe: 在目录下生成 manifest.json
@@ -87,7 +87,7 @@ let getDiffObj = function (maniFileL, maniFileR) {
         console.error("read file err:", err);
         return [jsonL, false, false]
     }
-    return = getDiff(jsonL, jsonR);
+    return getDiff(jsonL, jsonR);
 
 }
 

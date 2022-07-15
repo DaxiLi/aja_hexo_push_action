@@ -1,0 +1,82 @@
+name: 'auto push hexo to qiniu'
+author: Yuan Jie (moogila@outlook.com)
+description: 'push the hexo static file to qiniu automatic.'
+inputs:
+  bucket: 
+    description: 'Name of the qiniu bucket'
+    required: true
+  access-key:
+    description: 'Access-key of qiniu'
+    required: true
+  secret-key:
+    description: 'Secret-key of qiniu'
+    required: true
+  public-folder: 
+    description: 'The folder of your hexo public(myblog/public)'
+    required: true
+  hexo-folder: 
+    description: 'The folder of your hexo (myblog)'
+    required: true
+    default: ""
+  domain:
+    description: 'Your website domain(http://example.com/)'
+    required: true
+  hexo-cli-version:
+    description: 'The hexo cli version in your local env'
+    required: true
+    default: '4.3.0'
+  qiniu-zone:
+    description: 'qiniu zone setting: 华东	Zone_z0 华北	Zone_z1 华南	Zone_z2 北美	Zone_na0'
+    required: true
+    default: ''
+  manifest-filepath:
+    description: the file to save manifest.json
+    required: false
+    default: "manifest.json"
+  blog-repository:
+    description: the file to save manifest.json
+    required: false
+    default: ""
+runs:
+  using: 'composite'
+  steps:
+    - name: install hexo-cli
+      run: npm install -g hexo-cli@${{ inputs.hexo-cli-version }}
+      shell: bash
+          
+    - name: List files in the repository
+      run: ls ${{ github.workspace }}/main 
+      shell: bash
+          
+    - name: List files in the theme
+      run: ls ${{ github.workspace }}/main/themes 
+      shell: bash
+          
+    - name: List files in the ${{inputs.hexo-folder}}
+      run: ls ${{ github.workspace }}/main/${{ inputs.hexo-folder }} 
+      shell: bash
+
+    - name: install dependencies
+      run: npm ci 
+      shell: bash
+      working-directory: ${{ github.workspace }}/main
+
+    - name: install dependencies for hexo
+      run: npm ci 
+      shell: bash
+      working-directory: ${{ github.workspace }}/main/${{ inputs.hexo-folder }}
+            
+    - name: download manifest from your qiniu bucket
+      run: wget --no-check-certificate ${{ inputs.domain }}/manifest.json -O ${{ github.workspace }}/main/${{inputs.manifest-filepath}} && cat  ${{ github.workspace }}/main/${{inputs.manifest-filepath}}
+      shell: bash
+      working-directory: ${{ github.workspace }}/main
+            
+    - name: generate the public files 
+      run: hexo generate
+      shell: bash
+      working-directory: ${{ github.workspace }}/main/${{ inputs.hexo-folder }}
+
+    - name: run the script
+      run: node main.js ${{ inputs.bucket }} ${{ inputs.access-key }} ${{ inputs.secret-key }} ${{inputs.hexo-folder}}/${{inputs.public-folder}} ${{ inputs.domain }}  ${{inputs.qiniu-zone}} ${{github.workspace}}/main/${{inputs.manifest-filepath}}
+      shell: bash
+      working-directory: ${{ github.workspace }}/main

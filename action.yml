@@ -115,6 +115,7 @@ runs:
       shell: bash
 
     - run: cat blog/hexo/package.json blog/hexo/package-lock.json
+      shell: bash
 
     - name: ------------- install dependencies ---------------
       run: npm ci

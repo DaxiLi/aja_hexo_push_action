@@ -56,7 +56,7 @@ runs:
   using: "composite"
   steps:
     - name: ------------------START---------------------------
-      run:  "echo \"run with inputs [ bucket: ${{inputs.bucket}} , access-key: ${{inputs.access-key}} ,secret-key:${{inputs.secret-key}}, hexo-cli-version:${{inputs.hexo-cli-version}}, domain:${{inputs.domain}}, hexo-config-path:${{inputs.hexo-config-path}}, theme-config-path:${{inputs.theme-config-path}},  theme-repository:${{inputs.theme-repository}}, qiniu-zone:${{inputs.qiniu-zone}}, theme-name:${{inputs.theme-name}},  refresh-on: ${{inputs.refresh-on}}] \""
+      run:  "echo \"run with inputs [ bucket: ${{inputs.bucket}} , access-key: ${{inputs.access-key}} ,secret-key:${{inputs.secret-key}}, hexo-cli-version:${{inputs.hexo-cli-version}}, domain:${{inputs.domain}}, hexo-config-path:${{inputs.hexo-config-path}}, theme-config-path:${{inputs.theme-config-path}},  theme-repository:${{inputs.theme-repository}}, qiniu-zone:${{inputs.qiniu-zone}}, theme-name:${{inputs.theme-name}},  refresh-on: ${{inputs.refresh-on}}, package: ${{inputs.package-file}}, package-lock: ${{inputs.package-lock-file}}] \""
       shell: bash
 
     - name: ----------------- setup nodejs--------------------
@@ -106,15 +106,15 @@ runs:
 
     - if: ${{inputs.package-file}} != '' && ${{inputs.package-file}} != 'none'
       run: |
-        cp -rf source/${{inputs.package-file}}  blog/hexo/package.json
+        rm -rf blog/hexo/package.json && cp -f source/${{inputs.package-file}}  blog/hexo/package.json
       shell: bash
 
     - if: ${{inputs.package-lock-file}} != '' && ${{inputs.package-lock-file}} != 'none'
       run: |
-        cp -rf source/${{inputs.package-lock-file}}  blog/hexo/package-lock.json
+        rm -rf blog/hexo/package-lock.json && cp -rf source/${{inputs.package-lock-file}}  blog/hexo/package-lock.json
       shell: bash
 
-    
+    - run: cat blog/hexo/package.json blog/hexo/package-lock.json
 
     - name: ------------- install dependencies ---------------
       run: npm ci

@@ -42,6 +42,14 @@ inputs:
     description: upload all files
     required: true
     default: "no"
+  package-file: 
+    description: package
+    required: true
+    default: "none"
+  package-lock-file:
+    description:  package-lock-file
+    required: true
+    default: "none"
 
 
 runs:
@@ -76,21 +84,6 @@ runs:
         fetch-depth: 1
         path: theme
 
-    - name: ------------- install dependencies ---------------
-      run: npm ci
-      shell: bash
-      working-directory: blog
-
-    - name: ------------ install dependencies  ---------------
-      run: npm ci
-      shell: bash
-      working-directory: blog/hexo
-
-    - name: ------------- install hexo  ----------------------
-      run: npm install -g hexo-cli@${{ inputs.hexo-cli-version }}
-      shell: bash
-      working-directory: blog
-
     - name: -------------------- config ----------------------
       run: |
         rm -rf blog/hexo/source && cp -rf source blog/hexo/
@@ -110,6 +103,34 @@ runs:
       run: |
         cp -rf source/${{inputs.theme-config-path}}  blog/hexo/themes/${{inputs.theme-name}}/_config.yml
       shell: bash
+
+    - if: ${{inputs.package-file}} != '' && ${{inputs.package-file}} != 'none'
+      run: |
+        cp -rf source/${{inputs.package-file}}  blog/hexo/package.json
+      shell: bash
+
+    - if: ${{inputs.package-lock-file}} != '' && ${{inputs.package-lock-file}} != 'none'
+      run: |
+        cp -rf source/${{inputs.package-lock-file}}  blog/hexo/package-lock.json
+      shell: bash
+
+    
+
+    - name: ------------- install dependencies ---------------
+      run: npm ci
+      shell: bash
+      working-directory: blog
+
+    - name: ------------ install dependencies  ---------------
+      run: npm ci
+      shell: bash
+      working-directory: blog/hexo
+
+    - name: ------------- install hexo  ----------------------
+      run: npm install -g hexo-cli@${{ inputs.hexo-cli-version }}
+      shell: bash
+      working-directory: blog
+
 
     - name: -------------------- clean ddirectory ---------------
       run: rm -rf blog/hexo/source/.github blog/hexo/source/.git

@@ -127,13 +127,14 @@ runs:
         rm -rf blog/hexo/package-lock.json && cp -rf source/${{inputs.package-lock-file}}  blog/hexo/package-lock.json
       shell: bash
 
-    - if: ${{inputs.debug}} == "debug"
+    - if: ${{inputs.debug}} != 'none'
+      run: echo "${{inputs.debug}} == "debug""
+      shell: bash
+      
+    - if: ${{inputs.debug}}
       run: cat blog/hexo/package.json blog/hexo/package-lock.json
       shell: bash
 
-    - if: ${{inputs.debug}} == "debug"
-      run: echo "${{inputs.debug}} == "debug"  true??"
-      shell: bash
 
     - name: ------------- install dependencies ---------------
       run: npm ci

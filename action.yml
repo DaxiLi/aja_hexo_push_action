@@ -50,6 +50,10 @@ inputs:
     description:  package-lock-file
     required: true
     default: "none"
+  debug:
+    description:  package-lock-file
+    required: true
+    default: "none"
 
 
 runs:
@@ -114,7 +118,8 @@ runs:
         rm -rf blog/hexo/package-lock.json && cp -rf source/${{inputs.package-lock-file}}  blog/hexo/package-lock.json
       shell: bash
 
-    - run: cat blog/hexo/package.json blog/hexo/package-lock.json
+    - if: ${{inputs.debug}} == 'debug'
+      run: cat blog/hexo/package.json blog/hexo/package-lock.json
       shell: bash
 
     - name: ------------- install dependencies ---------------

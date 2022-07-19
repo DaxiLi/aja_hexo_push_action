@@ -3,7 +3,7 @@
  * Project: d:\ajarc
  * Created Date: Thursday, July 14th 2022, 6:51:32 pm
  * Author: Aja
- * Last Modified: Saturday, 16th July 2022 1:00:51 am
+ * Last Modified: Tuesday, 19th July 2022 7:05:51 pm
  * Modified By: 
  * 
  * Describe: 
@@ -106,8 +106,6 @@ function upload(filename, filepath) {
 
 
 async function delFileFromQiniu(fileList) {
-    console.log("del list is:", fileList);
-
     var deleteOptions = [];
     var index = 900;
     var idx = 0;
@@ -215,7 +213,7 @@ async function main() {
             console.warn("del empty");
         }
     } else {
-
+        console.log("差异上传")
         let diffRes = man.getDiffObj(manPath, manifestPath);
         addList = diffRes[0] ? man.getFileList(diffRes[0]) : [];
         updateList = diffRes[1] ? man.getFileList(diffRes[1]) : [];
@@ -226,6 +224,16 @@ async function main() {
     // console.log(diffRes);
 
     // mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
+
+    console.groupCollapsed("del list");
+    console.log(delList);
+    console.groupEnd();
+    console.groupCollapsed("update list");
+    console.log(updateList);
+    console.groupEnd();
+    console.groupCollapsed("add list");
+    console.log(addList);
+    console.groupEnd();
 
     await delFileFromQiniu(delList);
     await updateFile2Qiniu(updateList);

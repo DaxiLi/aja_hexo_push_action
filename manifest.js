@@ -3,7 +3,7 @@
  * Project: d:\ajarc
  * Created Date: Thursday, July 14th 2022, 2:02:12 pm
  * Author: Aja
- * Last Modified: Friday, 15th July 2022 9:37:47 pm
+ * Last Modified: Tuesday, 19th July 2022 7:14:21 pm
  * Modified By: 
  * 
  * Describe: 在目录下生成 manifest.json
@@ -83,7 +83,7 @@ let getDiffObj = function (maniFileL, maniFileR) {
     }
     try {
         jsonR = JSON.parse(fr);
-    } catch (err){
+    } catch (err) {
         console.error("read file err:", err);
         return [jsonL, false, false]
     }
@@ -182,7 +182,7 @@ let processDir = function (dir) {
  * @param {check path} dir 
  * @param {the manifest.json out path} outfile 
  */
-let generateMeniFest = function (dir = "", outfile = "") {
+let generateMeniFest = function (dir = "", outfile = "", debug = "") {
     console.time("generate manifest.json");
     if (!dir || dir == "") {
         dir = process.cwd;
@@ -218,10 +218,12 @@ let generateMeniFest = function (dir = "", outfile = "") {
     } catch (err) {
         console.error("write file err:" + err);
     }
-    console.info("the menifest.json of " + dir + "is:");
-    console.groupCollapsed();
-    console.log(JSON.stringify(r, space = 4));
-    console.groupEnd();
+
+    if (debug == 'debug') {
+        console.info("the menifest.json of " + dir + "is:");
+        console.log(JSON.stringify(r, space = 4));
+    }
+
     console.timeEnd("generate manifest.json");
     return outfile;
 }

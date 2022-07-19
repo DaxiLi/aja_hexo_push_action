@@ -3,7 +3,7 @@
  * Project: d:\ajarc
  * Created Date: Thursday, July 14th 2022, 2:02:12 pm
  * Author: Aja
- * Last Modified: Tuesday, 19th July 2022 7:14:21 pm
+ * Last Modified: Wednesday, 20th July 2022 3:53:31 am
  * Modified By: 
  * 
  * Describe: 在目录下生成 manifest.json
@@ -30,7 +30,10 @@ const SPLITCHAR = "/";
 
 
 getFileList = function (J) {
-    console.info("getFileList: ", J);
+    console.log('get file list,length: ', J.length);
+    if (debug == 'debug') {
+        console.info("getFileList: ", J);
+    }
     let res = [
         "manifest.json"
     ];

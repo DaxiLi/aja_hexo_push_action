@@ -176,5 +176,5 @@ runs:
       shell: bash
 
     - name: ---------------------------------------- upload  -------------------
-      run: node blog/main.js ${{inputs.bucket}} ${{inputs.access-key}} ${{inputs.secret-key}} blog/hexo/public ${{inputs.domain}} ${{inputs.qiniu-zone}} ./manifest.json ${{inputs.refresh-on}}
+      run: node blog/main.js ${{inputs.bucket}} ${{inputs.access-key}} ${{inputs.secret-key}} blog/hexo/public ${{inputs.domain}} ${{inputs.qiniu-zone}} ./manifest.json ${{inputs.refresh-on}} ${{inputs.debug}}
       shell: bash

@@ -3,7 +3,7 @@
  * Project: d:\ajarc
  * Created Date: Thursday, July 14th 2022, 6:51:32 pm
  * Author: Aja
- * Last Modified: Tuesday, 19th July 2022 7:05:51 pm
+ * Last Modified: Wednesday, 20th July 2022 3:54:47 am
  * Modified By: 
  * 
  * Describe: 
@@ -38,6 +38,7 @@ let domain = process.argv[6];
 let zone = process.argv[7]; // 华东	Zone_z0 华北 Zone_z1 华南 Zone_z2 北美 Zone_na0'
 let manifestPath = process.argv[8];
 let refresh = process.argv[9];
+const debug = process.argv[10];
 
 
 
@@ -235,9 +236,9 @@ async function main() {
     console.log(addList);
     console.groupEnd();
 
-    await delFileFromQiniu(delList);
-    await updateFile2Qiniu(updateList);
     await uploadFile2Qiniu(addList);
+    await updateFile2Qiniu(updateList);
+    await delFileFromQiniu(delList);
     await updateFile2Qiniu(['manifest.json']);
 
     console.log('update success!');

@@ -2,19 +2,15 @@
 
 set -e;
 
-echo "accessKey $accessKey";
-echo "secretKey $secre";
-echo "bucket $bucket";
-echo "sub_dir $sub_dir";
-echo "thread_count $thread_count";
+# rm -rf qshell
+# mkdir qshell;
+unzip ./tool/qshell.zip -d ./;
+chmod +x ./qshell;
 
-
-mkdir qshell;
-unzip ./tool/qshell.zip -d ./qshell;
-chmod +x ./qshell/qshell;
-
-./qshell/qshell account -L -w -- $accesskey $secretkey uone
-./qshell/qshell user cu uone
+echo "start ...";
+./qshell account -L -w -- $access_key $secret_key uone;
+echo "set account";
+./qshell -L user cu uone;
 
 
 # 必须非 / 开头 / 结尾
@@ -32,14 +28,14 @@ fi
 
 
 # 获取本地 public 所有文件列表
-./qshell/qshell -L dircache $upload_dir -o local-public.txt 
+./qshell -L dircache $upload_dir -o local-public.txt 
 # 生成 sub_dir 前缀列表，如果 sub_dir 未定义，则不影响
 awk '{print "'''$sub_dir'''"$1}' local-public.txt > local-public.clear
 
 
 
 # 列举空间中的所有文件列表
-./qshell/qshell -L listbucket2   \
+./qshell -L listbucket2   \
     $bucket \
     $( if [ ! -z $sub_dir ];then echo "--prefix  $sub_dir";fi ) \
     -o $bucket-all.txt;
@@ -58,12 +54,12 @@ comm -1 -3 local-public-sort.clear $bucket-all-sort.clear > del-list.txt
 
 ###############################################################
 # 直接上传文件夹覆盖同步
-# ./qshell/qshell 会自动比较文件是否相同，相同则不上传，但是，这个过程似乎有点慢
+# ./qshell 会自动比较文件是否相同，相同则不上传，但是，这个过程似乎有点慢
 # 不如原来的方案，考虑，自己生成 etag ，自己比较 
 
 UPLOAD() {
     echo "start upload files in $upload_dir";
-    ./qshell/qshell qupload2 -L \
+    ./qshell qupload2 -L \
         --src-dir=$upload_dir \
         --bucket=$bucket \
         --file-list=$1 \
@@ -106,7 +102,7 @@ UPLOAD() {
 
 
 DEL(){
-    ./qshell/qshell batchdelete --force \
+    ./qshell -L batchdelete --force \
     $bucket \
     --input-file=$1 \
     --success-list=$2 \

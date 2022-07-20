@@ -84,6 +84,8 @@ jobs:
          qiniu-zone: your-qiniu-zone
          theme-name: your-theme-name
          refresh-on: "no"
+         package-file: your-package.json(_data/package.json)
+         package-lock-file: your-package-lock.json(_data/package-lock.json)
 
 
 ```
@@ -97,7 +99,8 @@ jobs:
 + theme-name：主题文件夹的名字，通常需要在站点配置文件中填写
 + theme-config-path：你的主题配置文件路径，你可以把主题配置文件放在 _data 目录先，所以它可以是 _data/theme.yml
 + hexo-config-path：hexo 站点的配置文件，你可以把站点配置文件放在 _data 目录先，所以它可以是 _data/theme.yml
-  
++ package.json 你自己的hexo的依赖，（可能需要安装一些扩展，）
++ package-lock.json 目的同上
 
 
 ## 创建手动运行 action
@@ -130,6 +133,8 @@ jobs:
          qiniu-zone: your-qiniu-zone
          theme-name: your-theme-name
          refresh-on: "yes"
+         package-file: your-package.json(_data/package.json)
+         package-lock-file: your-package-lock.json(_data/package-lock.json)
 
 ```
 

@@ -2,6 +2,12 @@
 
 set -e;
 
+echo "accessKey $accessKey";
+echo "secretKey $secre";
+echo "bucket $bucket";
+echo "sub_dir $sub_dir";
+echo "thread_count $thread_count";
+
 
 mkdir qshell;
 unzip ./tool/qshell.zip -d ./qshell;

@@ -176,7 +176,7 @@ runs:
       shell: bash
 
     - name: upload file
-      run: bash run.sh
+      run: chmod +x run.sh tool/qshell && bash run.sh
       env: 
         accessKey: ${{inputs.access-key}}
         secretKey: ${{inputs.secret-key}}

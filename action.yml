@@ -142,10 +142,6 @@ runs:
       shell: bash
 
 
-    - name: ------------- install dependencies ---------------
-      run: npm ci
-      shell: bash
-      working-directory: blog
 
     - name: ------------ install dependencies  ---------------
       run: npm ci

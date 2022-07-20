@@ -176,7 +176,7 @@ runs:
       shell: bash
 
     - name: upload file
-      run: bash blog/run.sh
+      run: bash run.sh
       env: 
         accessKey: ${{inputs.access-key}}
         secretKey: ${{inputs.secret-key}}

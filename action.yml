@@ -187,5 +187,6 @@ runs:
         check_exists: ${{inputs.check-exists}}
         check_hash: ${{inputs.check-hash}}
       shell: bash
+      working-directory:  blog/
 
 

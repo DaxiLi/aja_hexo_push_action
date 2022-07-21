@@ -30,7 +30,7 @@ fi
 # 获取本地 public 所有文件列表
 ./qshell -L dircache $upload_dir -o local-public.txt 
 # 生成 sub_dir 前缀列表，如果 sub_dir 未定义，则不影响
-awk -F '\t' '{print "'''$sub_dir'''"$1"\"}' local-public.txt > local-public.clear
+awk -F '\t' '{print "'''$sub_dir'''"$1}' local-public.txt > local-public.clear
 
 
 

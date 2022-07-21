@@ -107,7 +107,7 @@ UPLOAD() {
 
 
 DEL(){
-    if [ "$delete_unuse_files" != "true" ];thread_count
+    if [ "$delete_unuse_files" != "true" ];then
         echo "dont delete files! skip !";
         return 0;
     fi

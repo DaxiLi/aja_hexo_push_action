@@ -70,7 +70,8 @@ UPLOAD() {
         --skip-file-prefixes=$skip_file_prefixes \
         --skip-suffixes=$skip_suffixes \
         --skip-fixed-strings=$skip_fixed_strings \
-        --log-stdout=$(if [ "$debug" == "debug" ];then echo "true";else echo "false";fi) \
+        --log-file=log.log \
+        --log-level=$(if [ "$debug" == "debug" ];then echo "debug";else echo "info";fi) \
         $(if [ ! -z $sub_dir ];then echo "--key-prefix=$sub_dir";fi) \
         --overwrite=true \
         --thread-count=$thread_count \
@@ -85,6 +86,11 @@ UPLOAD() {
             echo "--check-exists=false ";
         fi
         )
+    
+    if [ "$debug" == "debug" ];then
+        echo "logs:";
+        cat log.log;
+    fi
     echo "----------------------------------------------------------"
     echo "-------------- these files upload succeed! ---------------";
     cat $2;

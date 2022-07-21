@@ -79,6 +79,10 @@ inputs:
     description: skip-fixed-strings
     required: true
     default: ""
+  delete-unuse-files:
+    description: delete-unuse-file
+    required: true
+    default: "false"
 
 
 
@@ -207,6 +211,7 @@ runs:
         skip_file_prefixes: ${{inputs.skip-file-prefixes}}
         skip_suffixes: ${{inputs.skip-suffixes}}
         skip_fixed_strings: ${{inputs.skip-fixed-strings}}
+        delete_unuse_files: ${{inputs.delete-unuse-files}}
       shell: bash
       working-directory:  blog/
 

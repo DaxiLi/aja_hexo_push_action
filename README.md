@@ -157,7 +157,7 @@ jobs:
 
 + debug: 是否 debug 默认为 no ，开启改为 "debug" 会在控制台打印配置文件，
 
-+ delete-unuse-files: 是都删除七牛云中无用文件，默认 true ，每次都删除七牛云空间中无用的文件，如果为 false ， 则只会更新必要的文件，而每次修改博客留下来的无用文件不会被清理，即使您删除了一篇博客，只有没有新的博客与他重名，也不会被删除.
++ delete-unuse-files: 是都删除七牛云中无用文件，默认 false ，每次都删除七牛云空间中无用的文件，如果为 false ， 则只会更新必要的文件，而每次修改博客留下来的无用文件不会被清理，即使您删除了一篇博客，只有没有新的博客与他重名，也不会被删除.如无特殊需要，建议为 true **本人不对任何数据损失负责**
 
 
 填写好配置之后，推送到仓库，你可以在 action 看到一个按钮手动运行该  action  即可推送仓库至 七牛云。
@@ -172,7 +172,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
      - name: running..
-       uses: DaxiLi/aja_hexo_push_action@v1
+       uses: DaxiLi/aja_hexo_push_action@main
        with:
           bucket: your-bucket
           access-key: ${{ secrets.QINIU_ACCESS_KEY }}

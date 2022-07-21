@@ -30,7 +30,7 @@ fi
 # 获取本地 public 所有文件列表
 ./qshell -L dircache $upload_dir -o local-public.txt 
 # 生成 sub_dir 前缀列表，如果 sub_dir 未定义，则不影响
-awk '{print "'''$sub_dir'''"$1}' local-public.txt > local-public.clear
+awk -F '\t' '{print "'''$sub_dir'''"$1"\"}' local-public.txt > local-public.clear
 
 
 
@@ -66,6 +66,11 @@ UPLOAD() {
         --success-list=$2 \
         --overwrite-list=$3 \
         --failure-list=$4 \
+        --skip-path-prefixes=$skip_path_prefixes \
+        --skip-file-prefixes=$skip_file_prefixes \
+        --skip-suffixes=$skip_suffixes \
+        --skip-fixed-string=$skip_fixed_string \
+        --log-stdout=$(if [ "$debug" == "debug" ];then echo "true";else echo "false";fi) \
         $(if [ ! -z $sub_dir ];then echo "--key-prefix=$sub_dir";fi) \
         --overwrite=true \
         --thread-count=$thread_count \
@@ -102,6 +107,9 @@ UPLOAD() {
 
 
 DEL(){
+    if [ "$delete_unuse_files" != "true" ];thread_count
+        return 0;
+    fi
     ./qshell -L batchdelete --force \
     $bucket \
     --input-file=$1 \

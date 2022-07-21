@@ -62,7 +62,24 @@ inputs:
   debug:
     description:  debug
     required: true
-    default: "none"
+    default: "no"
+  skip-path-prefixes:
+    description: skip-path-prefixes
+    required: true
+    default: ""
+  skip-file-prefixes:
+    description: skip_file_prefixes
+    required: true
+    default: ""
+  skip-suffixes:
+    description: skip_suffixes
+    required: true
+    default: ""
+  skip-fixed-string:
+    description: skip-fixed-string
+    required: true
+    default: ""
+
 
 
 runs:
@@ -186,6 +203,7 @@ runs:
         thread_count: ${{inputs.thread-count}}
         check_exists: ${{inputs.check-exists}}
         check_hash: ${{inputs.check-hash}}
+        skip_path_prefixes: ${{inputs.skip-path-prefixes}}
       shell: bash
       working-directory:  blog/
 

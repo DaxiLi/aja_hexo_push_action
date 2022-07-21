@@ -69,7 +69,7 @@ UPLOAD() {
         --skip-path-prefixes=$skip_path_prefixes \
         --skip-file-prefixes=$skip_file_prefixes \
         --skip-suffixes=$skip_suffixes \
-        --skip-fixed-string=$skip_fixed_string \
+        --skip-fixed-strings=$skip_fixed_strings \
         --log-stdout=$(if [ "$debug" == "debug" ];then echo "true";else echo "false";fi) \
         $(if [ ! -z $sub_dir ];then echo "--key-prefix=$sub_dir";fi) \
         --overwrite=true \

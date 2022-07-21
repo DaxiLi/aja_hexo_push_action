@@ -75,8 +75,8 @@ inputs:
     description: skip_suffixes
     required: true
     default: ""
-  skip-fixed-string:
-    description: skip-fixed-string
+  skip-fixed-strings:
+    description: skip-fixed-strings
     required: true
     default: ""
 
@@ -204,6 +204,9 @@ runs:
         check_exists: ${{inputs.check-exists}}
         check_hash: ${{inputs.check-hash}}
         skip_path_prefixes: ${{inputs.skip-path-prefixes}}
+        skip_file_prefixes: ${{inputs.skip-file-prefixes}}
+        skip_suffixes: ${{inputs.skip-suffixes}}
+        skip_fixed_strings: ${{skip-fixes-strings}}
       shell: bash
       working-directory:  blog/
 

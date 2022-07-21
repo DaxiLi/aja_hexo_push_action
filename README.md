@@ -123,7 +123,7 @@ jobs:
   skip-path-prefixes: ""
   skip-file-prefixes: "" 
   skip-suffixes: ""
-  skip-fixed-string: ""
+  skip-fixed-strings: ""
   debug: no
   delete-unuse-files: true
 ```
@@ -152,7 +152,7 @@ jobs:
 + skip-suffixes: 跳过所有以该后缀列表里面字符串为后缀的文件或者目录，默认为空字符
 
 
-+ skip-fixed-string: 跳过所有文件路径（相对路径）中包含该字符串列表中字符串的文件，默认为空字符。
++ skip-fixed-strings: 跳过所有文件路径（相对路径）中包含该字符串列表中字符串的文件，默认为空字符。
 
 
 + debug: 是否 debug 默认为 no ，开启改为 "debug" 会在控制台打印配置文件，
@@ -192,7 +192,7 @@ jobs:
           skip-path-prefixes: ""
           skip-file-prefixes: "" 
           skip-suffixes: ""
-          skip-fixed-string: ""
+          skip-fixed-strings: ""
           debug: no
 
 ```

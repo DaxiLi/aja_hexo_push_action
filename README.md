@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
      - name: running..
-       uses: DaxiLi/aja_hexo_push_action@v1
+       uses: DaxiLi/aja_hexo_push_action@v2
        with:
           bucket: your-bucket
           access-key: ${{ secrets.QINIU_ACCESS_KEY }}
@@ -172,7 +172,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
      - name: running..
-       uses: DaxiLi/aja_hexo_push_action@main
+       uses: DaxiLi/aja_hexo_push_action@v2
        with:
           bucket: your-bucket
           access-key: ${{ secrets.QINIU_ACCESS_KEY }}

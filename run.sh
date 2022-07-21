@@ -108,6 +108,7 @@ UPLOAD() {
 
 DEL(){
     if [ "$delete_unuse_files" != "true" ];thread_count
+        echo "dont delete files! skip !";
         return 0;
     fi
     ./qshell -L batchdelete --force \

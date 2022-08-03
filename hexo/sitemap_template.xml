@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   {% for post in posts %}
-  <sitemap>
+  <url>
     <loc>{{ post.permalink | uriencode }}</loc>
     {% if post.updated %}
     <lastmod>{{ post.updated | formatDate }}</lastmod>
@@ -9,32 +9,28 @@
     <lastmod>{{ post.date | formatDate }}</lastmod>
     {% endif %}
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </sitemap>
+  </url>
   {% endfor %}
 
-  <sitemap>
+  <url>
     <loc>{{ config.url | uriencode }}</loc>
     <lastmod>{{ sNow | formatDate }}</lastmod>
     <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </sitemap>
+  </url>
 
   {% for tag in tags %}
-  <sitemap>
+  <url>
     <loc>{{ tag.permalink | uriencode }}</loc>
     <lastmod>{{ sNow | formatDate }}</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </sitemap>
+  </url>
   {% endfor %}
 
   {% for cat in categories %}
-  <sitemap>
+  <url>
     <loc>{{ cat.permalink | uriencode }}</loc>
     <lastmod>{{ sNow | formatDate }}</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </sitemap>
+  </url>
   {% endfor %}
-</sitemapindex>
+</urlset>

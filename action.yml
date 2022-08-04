@@ -83,6 +83,14 @@ inputs:
     description: delete-unuse-file
     required: true
     default: "false"
+  refresh-cdn:
+    description: refresh CDN
+    required: true
+    default: ""
+  domain-url:
+    description: your domain url
+    required: true
+    default: ""
 
 
 
@@ -199,8 +207,8 @@ runs:
     - name: upload file
       run: chmod +x run.sh && source run.sh 
       env: 
-        accessKey: ${{inputs.access-key}}
-        secretKey: ${{inputs.secret-key}}
+        access_key: ${{inputs.access-key}}
+        secret_key: ${{inputs.secret-key}}
         bucket: ${{inputs.bucket}}
         sub_dir: ${{inputs.sub-dir}}
         upload_dir: ${{inputs.upload-dir}}
@@ -212,6 +220,8 @@ runs:
         skip_suffixes: ${{inputs.skip-suffixes}}
         skip_fixed_strings: ${{inputs.skip-fixed-strings}}
         delete_unuse_files: ${{inputs.delete-unuse-files}}
+        refresh_cdn: ${{inputs.refresh-cdn}}
+        domain_url: ${{inputs.domain-url}}
       shell: bash
       working-directory:  blog/
 

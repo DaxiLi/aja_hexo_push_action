@@ -59,6 +59,9 @@ comm -1 -3 local-public-sort.clear $bucket-all-sort.clear > del-list.txt
 
 UPLOAD() {
     echo "start upload files in $upload_dir";
+    echo '' > $2;
+    echo '' > $3;
+    echo '' > $4;
     ./qshell qupload2 -L \
         --src-dir=$upload_dir \
         --bucket=$bucket \
@@ -171,6 +174,7 @@ REFRESHCND(){
     echo "----------------------------------------------------------"
     ./qshell -L \
         cdnrefresh -i refresh.txt
+    echo '' > $1;
 }
 
 
@@ -207,5 +211,4 @@ if ! DEL del-list.txt del-succeed.txt del-fail.txt; then
         fi
     fi
 fi
-REFRESHCND write.txt
 

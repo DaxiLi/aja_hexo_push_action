@@ -137,31 +137,75 @@ DEL(){
 }
 
 
+
+REFRESHCND(){
+    if [ -z $refresh_cdn ];then
+        return
+    fi
+    if [ -z $domain_url ];then
+        echo "--------- WARNING --------";
+        echo "you enable fresh cdn,but you did not input a domain url";
+        echo "skip refreshing.....";
+    fi
+    if [[ ! $domain_url =~ .*/$ ]];then
+        domain_url="$domain_url/"
+    fi
+    if [[ ! $domain_url =~ ^http://.* ]];then
+            http_flag = 'true';
+    fi
+    if [[ ! $domain_url =~ ^https://.* ]];then
+            if [ ! -z $http_flag ];then
+                echo "domain url must start with http(s)://";
+                return;
+            fi
+    fi
+    res=$(cat $1);
+    if [ -z $res ];then
+        echo "nothing need refresh..";
+        return
+    fi
+    awk -F '\t' '{print "'''$domain_url$sub_dir'''"$1}' $1 > refresh.txt
+    echo "----------------------------------------------------------"
+    echo "-------refresh these files links:--------";
+    cat refresh.txt
+    echo "----------------------------------------------------------"
+    ./qshell -L \
+        cdnrefresh -i refresh.txt
+}
+
+
 if ! UPLOAD local-public.txt succeed.txt write.txt fail.txt ;then
+    REFRESHCND write.txt
     echo "----------------------------------------------------------"
     echo "------------ retry again....---------";
     if ! UPLOAD fail.txt success.txt write.txt fail0x1.txt ;then
+        REFRESHCND write.txt
         echo "----------------------------------------------------------"
         echo "----------- last retry.... ----------";
         if ! UPLOAD fail0x1.txt success.txt write.txt fail0x2.txt ;then    
+            REFRESHCND write.txt
             echo "----------------------------------------------------------"
             echo "-------- skip these files --------";
         fi
     fi
 fi
 
+REFRESHCND write.txt
 
 if ! DEL del-list.txt del-succeed.txt del-fail.txt; then
+    REFRESHCND write.txt
     echo "----------------------------------------------------------"
     echo "------------ retry again....---------";
     if ! DEL del-fail.txt del-succeed.txt del-fail0x1.txt ;then
+        REFRESHCND write.txt
         echo "----------------------------------------------------------"
         echo "----------- last retry.... ----------";
         if ! DEL del-fail0x1.txt del-succeed.txt del-fail0x2.txt ;then  
+            REFRESHCND write.txt
             echo "----------------------------------------------------------"
             echo "-------- skip these files --------";
         fi
     fi
 fi
-
+REFRESHCND write.txt
 

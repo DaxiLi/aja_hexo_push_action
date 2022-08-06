@@ -91,6 +91,9 @@ inputs:
     description: your domain url
     required: true
     default: ""
+  theme-repository-ref:
+    description: theme-repository-ref
+    default: 'master'
 
 
 
@@ -124,6 +127,7 @@ runs:
       with:
         repository: ${{inputs.theme-repository}}
         fetch-depth: 1
+        ref: ${{inputs.theme-repository-ref}}
         path: theme
 
 

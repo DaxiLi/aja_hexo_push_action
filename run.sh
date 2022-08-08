@@ -101,7 +101,7 @@ UPLOAD() {
     echo "----------------------------------------------------------"
     echo "-------------- these file was overwrite! -----------------";
     cat $3; 
-    res=$(cat $4);
+    res=$(cat $4 | sed $'s/\"/\\"/g' );
     echo "----------------------------------------------------------"
     if [ -z $res ];then
         echo "------------- no file upload fail! ----------------------";
@@ -126,9 +126,9 @@ DEL(){
     --success-list=$2 \
     --failure-list=$3 
     
-    res=$(cat $3);
-    echo "----------------------------------------------------------"
-    if [ -z $res ];then
+    res=$(cat $3 | sed $'s/\"/\\"/g');
+    echo "----------------------------------------------------------";
+    if [ -z "$res" ];then
         cat $2;
         echo "-------------- delete files finished! ----------------";
         return 0;
@@ -162,8 +162,8 @@ REFRESHCND(){
                 return;
             fi
     fi
-    res=$(cat $1);
-    if [ -z $res ];then
+    res=$(cat $1 | sed $'s/\"/\\"/g');
+    if [ -z "$res" ];then
         echo "nothing need refresh..";
         return
     fi
